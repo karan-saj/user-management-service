@@ -6,8 +6,12 @@ import com.bank.userManagement.exception.UserNotFoundException;
 import com.bank.userManagement.repository.UserRepository;
 import com.bank.userManagement.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
+import javax.naming.ServiceUnavailableException;
 
 import static com.bank.userManagement.util.TransformationUtil.convertUserDetails;
 
@@ -25,6 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CircuitBreaker(name = "userService", fallbackMethod = "fetchUserDetailsFallback")
     public UserDTO fetchUserDetails(Long id) {
         log.info("Fetching user details for user id : {}", id);
         return fetchStoredUserDetails(id);
@@ -32,6 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CircuitBreaker(name = "userService", fallbackMethod = "createUserFallback")
     public UserDTO createUser(UserDTO userDetails) {
         log.info("Creating new user for user details");
 
@@ -44,8 +50,8 @@ public class UserServiceImpl implements UserService {
 
     private UserDTO fetchStoredUserDetails(Long id) {
         log.debug("Fetching user details based on user id from db");
-        UserEntity userDetails = userRepository.findById(id).
-                orElseThrow(() -> new UserNotFoundException("Error: User Id is not present"));
+        UserEntity userDetails = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Error: User Id is not present"));
 
         log.info("Fetched user details successfully for user id: {}", id);
         log.debug("Converting user detail to response object");
@@ -61,5 +67,17 @@ public class UserServiceImpl implements UserService {
 
         log.debug("Convert user detail to response object");
         return convertUserDetails(userEntity);
+    }
+
+    public ResponseEntity<Object> fetchUserDetailsFallback(Long id, Throwable throwable) throws ServiceUnavailableException {
+        log.error("Error fetching user details for user id {}: {}", id, throwable.getMessage());
+
+        throw new ServiceUnavailableException("User service is temporarily unavailable. Please try again later.");
+    }
+
+    public ResponseEntity<Object> createUserFallback(UserDTO userDetails, Throwable throwable) throws ServiceUnavailableException {
+        log.error("Error creating user with details {}: {}", userDetails, throwable.getMessage());
+
+        throw new ServiceUnavailableException("User service is temporarily unavailable. Please try again later.");
     }
 }
