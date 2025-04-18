@@ -2,14 +2,45 @@ package com.bank.userManagement.util;
 
 import com.bank.userManagement.dto.UserDTO;
 import com.bank.userManagement.exception.InvalidUserDetailsException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.Period;
+
+import static com.bank.userManagement.common.CommonConst.MIN_USER_AGE;
+
+@Slf4j
 @Component
 public class ValidationUtil {
 
     public void validateUserDetails(UserDTO userDetails) {
-        if (userDetails.getFirstName().length() < 3 || userDetails.getLastName().length() < 3) {
-            throw new InvalidUserDetailsException("Invalid user details provided: First name or last name is too short.");
+        validateUserName(userDetails.getFirstName(), userDetails.getLastName());
+        validateUserDateOfBirth(userDetails.getDateOfBirth());
+    }
+
+    private void validateUserName(String firstName, String lastName) {
+        if (firstName.trim().isEmpty() || lastName.trim().isEmpty()) {
+            throw new InvalidUserDetailsException("First name and last name cannot be blank or only spaces.");
+        }
+
+        if (firstName.matches(".*\\d.*") || lastName.matches(".*\\d.*")) {
+            throw new InvalidUserDetailsException("First name and last name cannot contain numbers.");
+        }
+
+        if (firstName.length() > 15 || lastName.length() > 15) {
+            throw new InvalidUserDetailsException("First and last names should not exceed 15 characters.");
+        }
+
+        if (firstName.split(" ").length > 2) {
+            throw new InvalidUserDetailsException("First name should not have more than 2 words.");
+        }
+    }
+
+    private void validateUserDateOfBirth(LocalDate dateOfBirth) {
+        int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
+        if (age < MIN_USER_AGE) {
+            throw new InvalidUserDetailsException("Invalid user details provided: User age must be at least 18 years old");
         }
     }
 }
