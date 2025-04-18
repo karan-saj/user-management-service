@@ -1,4 +1,4 @@
-package com.bank.userManagement.config;
+package com.bank.userManagement.filter;
 
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;

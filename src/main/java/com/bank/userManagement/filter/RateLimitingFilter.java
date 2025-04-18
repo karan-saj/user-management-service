@@ -1,4 +1,4 @@
-package com.bank.userManagement.config;
+package com.bank.userManagement.filter;
 
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.*;
