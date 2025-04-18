@@ -33,6 +33,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<UserDTO> fetchUserDetails(@PathVariable Long id) {
+        log.info("Request received to fetch user id for : {}", id);
         return new ResponseEntity<>(userService.fetchUserDetails(id), HttpStatus.OK);
     }
 
@@ -43,6 +44,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user details")
     })
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDetails) {
+        log.info("Request received to create new user");
         return new ResponseEntity<>(userService.createUser(userDetails), HttpStatus.CREATED);
     }
 
