@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO fetchUserDetails(Long id) {
         log.info("Fetching user details for user id : {}", id);
-
         return fetchStoredUserDetails(id);
     }
 
@@ -42,23 +41,23 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDTO fetchStoredUserDetails(Long id) {
-        log.trace("Fetching user details based on user id from db");
+        log.debug("Fetching user details based on user id from db");
         UserEntity userDetails = userRepository.findById(id).
                 orElseThrow(() -> new UserNotFoundException("Error: User Id is not present"));
 
         log.info("Fetched user details successfully for user id: {}", id);
-        log.trace("Converting user detail to response object");
+        log.debug("Converting user detail to response object");
         return convertUserDetails(userDetails);
     }
 
     private UserDTO createNewUser(UserDTO userDetails) {
-        log.trace("Converting user request to entity format");
+        log.debug("Converting user request to entity format");
         UserEntity userRequest = convertUserDetails(userDetails);
 
-        log.trace("Storing new user request data in db");
+        log.debug("Storing new user request data in db");
         UserEntity userEntity = userRepository.save(userRequest);
 
-        log.trace("Convert user detail to response object");
+        log.debug("Convert user detail to response object");
         return convertUserDetails(userEntity);
     }
 }
