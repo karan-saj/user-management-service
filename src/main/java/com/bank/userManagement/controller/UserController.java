@@ -3,6 +3,9 @@ package com.bank.userManagement.controller;
 import com.bank.userManagement.dto.UserDTO;
 import com.bank.userManagement.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +30,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Fetch user details by ID", description = "Fetches user details for the given user ID")
+    @Operation(
+            summary = "Fetch user details by ID",
+            description = "Fetches user details for the given user ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User details fetched successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")
@@ -38,7 +43,26 @@ public class UserController {
     }
 
     @PostMapping()
-    @Operation(summary = "Create a new user", description = "Creates a new user and stores the details in db")
+    @Operation(
+            summary = "Create a new user",
+            description = "Creates a new user and stores the details in db",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "User input",
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = UserDTO.class),
+                    examples = @ExampleObject(value =
+                        """
+                            {
+                              "firstName": "John",
+                              "lastName": "Doe",
+                              "dateOfBirth": "1999-12-31"
+                            }
+                         """
+                    )
+            )
+    )
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User successfully created"),
             @ApiResponse(responseCode = "400", description = "Invalid user details")
