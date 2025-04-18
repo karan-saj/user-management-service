@@ -12,6 +12,11 @@ public class TransformationUtil {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    /**
+     * Convert user entity to user dto
+     * @param userEntity user details fetched from db
+     * @return user readable details
+     */
     public static UserDTO convertUserDetails(UserEntity userEntity) {
         if (userEntity == null) return null;
 
@@ -23,6 +28,11 @@ public class TransformationUtil {
         );
     }
 
+    /**
+     * Convert user details to entity object which can be stored in db
+     * @param userDetails shared user details
+     * @return db storable user details
+     */
     public static UserEntity convertUserDetails(UserDTO userDetails) {
         if (userDetails == null) return null;
 
@@ -34,10 +44,20 @@ public class TransformationUtil {
         return userEntity;
     }
 
+    /**
+     * Remove trailing whitespace from user first and last name
+     * @param input user name
+     * @return cleaned username
+     */
     private static String safeTrim(String input) {
         return input != null ? input.trim() : null;
     }
 
+    /**
+     * Parse date passed by user from string format to LocalDate format
+     * @param dateStr date string
+     * @return LocalDate format of date
+     */
     private static LocalDate parseDate(String dateStr) {
         try {
             return LocalDate.parse(dateStr, DATE_FORMATTER);

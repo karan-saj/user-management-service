@@ -11,6 +11,9 @@ import java.util.UUID;
 public class RequestTrackingFilter implements Filter {
     private static final String REQUEST_ID = "requestId";
 
+    /**
+     * Add unique request id so it can be tracked as it progresses through the system
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

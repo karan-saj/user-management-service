@@ -28,6 +28,13 @@ public class UserServiceImpl implements UserService {
         this.validation = validation;
     }
 
+    /**
+     * Fetch user detail based on unique id shared
+     * @param id unique user id
+     * @return user details
+     * @throws UserNotFoundException if user is not found
+     * @throws RuntimeException if something went wring while trying to fetch details
+     */
     @Override
     @CircuitBreaker(name = "userService", fallbackMethod = "fetchUserDetailsFallback")
     public UserDTO fetchUserDetails(Long id) {
@@ -43,6 +50,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Create user in db based on shared details
+     * @param userDetails shared user details
+     * @return user details with unique user of the user
+     */
     @Override
     @Transactional
     @CircuitBreaker(name = "userService", fallbackMethod = "createUserFallback")
@@ -61,6 +73,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Fetch the user details from db and convert to user readable format
+     * @param id unique user id
+     * @return user details
+     */
     private UserDTO fetchStoredUserDetails(Long id) {
         log.debug("Fetching user details based on user id from db");
         UserEntity userDetails = userRepository.findById(id)
@@ -71,6 +88,11 @@ public class UserServiceImpl implements UserService {
         return convertUserDetails(userDetails);
     }
 
+    /**
+     * Convert user detail to entity object and create new user in db
+     * @param userDetails shared user details
+     * @return user details with unique user id
+     */
     private UserDTO createNewUser(UserDTO userDetails) {
         log.debug("Converting user request to entity format");
         UserEntity userRequest = convertUserDetails(userDetails);
@@ -82,14 +104,26 @@ public class UserServiceImpl implements UserService {
         return convertUserDetails(userEntity);
     }
 
+    /**
+     * Fallback method for fetch user if the circuit breaker is triggered
+     * @param id unique user id
+     * @param throwable cause for service outage
+     * @throws ServiceUnavailableException user friendly message for service outage
+     */
     public ResponseEntity<Object> fetchUserDetailsFallback(Long id, Throwable throwable) throws ServiceUnavailableException {
         log.error("Error fetching user details for user id {}: {}", id, throwable.getMessage());
 
         throw new ServiceUnavailableException("User service is temporarily unavailable. Please try again later.");
     }
 
+    /**
+     * Fallback method for create user if the circuit breaker is triggered
+     * @param userDetails user details
+     * @param throwable cause for service outage
+     * @throws ServiceUnavailableException user friendly message for service outage
+     */
     public ResponseEntity<Object> createUserFallback(UserDTO userDetails, Throwable throwable) throws ServiceUnavailableException {
-        log.error("Error creating user with details {}: {}", userDetails, throwable.getMessage());
+        log.error("Error creating user with error : {}", throwable.getMessage());
 
         throw new ServiceUnavailableException("User service is temporarily unavailable. Please try again later.");
     }

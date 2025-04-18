@@ -18,11 +18,20 @@ public class ValidationUtil {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    /**
+     * Validate user details against business logic
+     * @param userDetails shared user details
+     */
     public void validateUserDetails(UserDTO userDetails) {
         validateUserName(userDetails.getFirstName(), userDetails.getLastName());
         validateUserDateOfBirth(userDetails.getDateOfBirth());
     }
 
+    /**
+     * Validate if user first name and last name are valid
+     * @param firstName user first name
+     * @param lastName user last name
+     */
     private void validateUserName(String firstName, String lastName) {
         if (firstName.trim().isEmpty() || lastName.trim().isEmpty()) {
             throw new InvalidUserDetailsException("First name and last name cannot be blank or only spaces.");
@@ -41,6 +50,10 @@ public class ValidationUtil {
         }
     }
 
+    /**
+     * Validates is user's date of birth is valid or not
+     * @param dateOfBirth date of birth
+     */
     private void validateUserDateOfBirth(String dateOfBirth) {
         try {
             LocalDate dob = LocalDate.parse(dateOfBirth, DATE_FORMATTER);

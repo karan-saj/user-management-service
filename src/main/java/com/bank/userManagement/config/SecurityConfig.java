@@ -15,6 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration for basic security
+ * Checks against a stored user detail to check if operations can be performed
+ * Enables service health endpoint for monitoring
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
