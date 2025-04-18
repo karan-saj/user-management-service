@@ -32,7 +32,15 @@ public class UserServiceImpl implements UserService {
     @CircuitBreaker(name = "userService", fallbackMethod = "fetchUserDetailsFallback")
     public UserDTO fetchUserDetails(Long id) {
         log.info("Fetching user details for user id : {}", id);
-        return fetchStoredUserDetails(id);
+
+        try {
+            return fetchStoredUserDetails(id);
+        } catch (UserNotFoundException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            log.error("Unexpected error while fetching user details", exception);
+            throw new RuntimeException("Internal error occurred while fetching user details");
+        }
     }
 
     @Override
@@ -41,11 +49,16 @@ public class UserServiceImpl implements UserService {
     public UserDTO createUser(UserDTO userDetails) {
         log.info("Creating new user for user details");
 
-        log.info("Validating user details for new user creation");
-        validation.validateUserDetails(userDetails);
+        try {
+            log.info("Validating user details for new user creation");
+            validation.validateUserDetails(userDetails);
 
-        log.info("Created new user successfully");
-        return createNewUser(userDetails);
+            log.info("Created new user successfully");
+            return createNewUser(userDetails);
+        } catch (Exception ex) {
+            log.error("Unexpected error during user creation", ex);
+            throw new RuntimeException("Internal error occurred while creating the user");
+        }
     }
 
     private UserDTO fetchStoredUserDetails(Long id) {

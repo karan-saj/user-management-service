@@ -23,4 +23,10 @@ public class UserDTO {
     @NotNull(message = "Date of Birth for user is required")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Date of birth must be in the format yyyy-MM-dd")
     String dateOfBirth;
+
+    public UserDTO(String firstName, String lastName, String dateOfBirth) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+    }
 }
