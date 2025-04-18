@@ -2,7 +2,7 @@ package com.bank.userManagement.services;
 
 import com.bank.userManagement.dto.UserDTO;
 import com.bank.userManagement.entity.UserEntity;
-import com.bank.userManagement.excpetion.UserNotFoundException;
+import com.bank.userManagement.exception.UserNotFoundException;
 import com.bank.userManagement.repository.UserRepository;
 import com.bank.userManagement.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;

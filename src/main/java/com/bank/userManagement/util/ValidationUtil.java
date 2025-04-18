@@ -1,7 +1,7 @@
 package com.bank.userManagement.util;
 
 import com.bank.userManagement.dto.UserDTO;
-import com.bank.userManagement.excpetion.InvalidUserDetailsException;
+import com.bank.userManagement.exception.InvalidUserDetailsException;
 import org.springframework.stereotype.Component;
 
 @Component

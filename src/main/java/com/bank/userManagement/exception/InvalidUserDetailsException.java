@@ -1,4 +1,4 @@
-package com.bank.userManagement.excpetion;
+package com.bank.userManagement.exception;
 
 public class InvalidUserDetailsException extends RuntimeException {
 
