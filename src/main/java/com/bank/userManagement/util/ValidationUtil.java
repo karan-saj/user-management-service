@@ -7,12 +7,16 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import static com.bank.userManagement.common.CommonConst.MIN_USER_AGE;
 
 @Slf4j
 @Component
 public class ValidationUtil {
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public void validateUserDetails(UserDTO userDetails) {
         validateUserName(userDetails.getFirstName(), userDetails.getLastName());
@@ -37,10 +41,21 @@ public class ValidationUtil {
         }
     }
 
-    private void validateUserDateOfBirth(LocalDate dateOfBirth) {
-        int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
-        if (age < MIN_USER_AGE) {
-            throw new InvalidUserDetailsException("Invalid user details provided: User age must be at least 18 years old");
+    private void validateUserDateOfBirth(String dateOfBirth) {
+        try {
+            LocalDate dob = LocalDate.parse(dateOfBirth, DATE_FORMATTER);
+
+            if (dob.isAfter(LocalDate.now())) {
+                throw new InvalidUserDetailsException("Invalid user details provided: Date of birth cannot be in the future.");
+            }
+
+            int age = Period.between(dob, LocalDate.now()).getYears();
+
+            if (age < MIN_USER_AGE) {
+                throw new InvalidUserDetailsException("Invalid user details provided: User age must be at least 18 years old.");
+            }
+        } catch (DateTimeParseException e) {
+            throw new InvalidUserDetailsException("Invalid date of birth format. Please use yyyy-MM-dd.");
         }
     }
 }

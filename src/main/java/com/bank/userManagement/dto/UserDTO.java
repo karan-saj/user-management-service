@@ -21,6 +21,6 @@ public class UserDTO {
     String lastName;
 
     @NotNull(message = "Date of Birth for user is required")
-    @Past(message = "Date of birth must be in past")
-    LocalDate dateOfBirth;
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Date of birth must be in the format yyyy-MM-dd")
+    String dateOfBirth;
 }
