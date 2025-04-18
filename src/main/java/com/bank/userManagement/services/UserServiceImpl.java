@@ -7,6 +7,7 @@ import com.bank.userManagement.repository.UserRepository;
 import com.bank.userManagement.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.bank.userManagement.util.TransformationUtil.convertUserDetails;
 
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO createUser(UserDTO userDetails) {
         log.info("Creating new user for user details");
 
