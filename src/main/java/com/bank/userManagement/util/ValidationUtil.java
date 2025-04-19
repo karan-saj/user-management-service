@@ -59,13 +59,13 @@ public class ValidationUtil {
             LocalDate dob = LocalDate.parse(dateOfBirth, DATE_FORMATTER);
 
             if (dob.isAfter(LocalDate.now())) {
-                throw new InvalidUserDetailsException("Invalid user details provided: Date of birth cannot be in the future.");
+                throw new InvalidUserDetailsException("Date of birth cannot be in the future.");
             }
 
             int age = Period.between(dob, LocalDate.now()).getYears();
 
             if (age < MIN_USER_AGE) {
-                throw new InvalidUserDetailsException("Invalid user details provided: User age must be at least 18 years old.");
+                throw new InvalidUserDetailsException("User age must be at least 18 years old.");
             }
         } catch (DateTimeParseException e) {
             throw new InvalidUserDetailsException("Invalid date of birth format. Please use yyyy-MM-dd.");

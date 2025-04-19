@@ -2,6 +2,7 @@ package com.bank.userManagement.services;
 
 import com.bank.userManagement.dto.UserDTO;
 import com.bank.userManagement.entity.UserEntity;
+import com.bank.userManagement.exception.InvalidUserDetailsException;
 import com.bank.userManagement.exception.UserNotFoundException;
 import com.bank.userManagement.repository.UserRepository;
 import com.bank.userManagement.util.ValidationUtil;
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
         try {
             return fetchStoredUserDetails(id);
         } catch (UserNotFoundException exception) {
-            throw exception;
+            throw new UserNotFoundException("Error when fetching user details: "+exception.getMessage(), exception);
         } catch (Exception exception) {
             log.error("Unexpected error while fetching user details", exception);
             throw new RuntimeException("Internal error occurred while fetching user details");
@@ -67,6 +68,8 @@ public class UserServiceImpl implements UserService {
 
             log.info("Created new user successfully");
             return createNewUser(userDetails);
+        } catch (InvalidUserDetailsException exception) {
+            throw new InvalidUserDetailsException("Invalid user details provided for creating user: " + exception.getMessage(), exception);
         } catch (Exception ex) {
             log.error("Unexpected error during user creation", ex);
             throw new RuntimeException("Internal error occurred while creating the user");
@@ -81,7 +84,7 @@ public class UserServiceImpl implements UserService {
     private UserDTO fetchStoredUserDetails(Long id) {
         log.debug("Fetching user details based on user id from db");
         UserEntity userDetails = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Error: User Id is not present"));
+                .orElseThrow(() -> new UserNotFoundException("User Id is not present"));
 
         log.info("Fetched user details successfully for user id: {}", id);
         log.debug("Converting user detail to response object");
