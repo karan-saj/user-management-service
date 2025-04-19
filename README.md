@@ -182,6 +182,7 @@ curl --location 'http://localhost:8080/user' \
 
     Configurable logging using Logback for different environments.
     Logs user requests and errors with request-specific identifiers.
+    Logs are added to static file or archival
 
 ### Rate Limiting:
 
